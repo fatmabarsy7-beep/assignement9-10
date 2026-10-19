@@ -17,11 +17,11 @@ export async function getBookByTitle(title) {
     const key = title.trim().toLowerCase();
 
     if (cache.has(key)) {
-        console.log("CACHE HIT:", key);
-        return cache.get(key);
+        return {
+            book: cache.get(key),
+            cacheStatus: "HIT"
+        };
     }
-
-    console.log("CACHE MISS:", key);
 
     const book = await bookRepository.getBookByTitle(title);
 
@@ -29,7 +29,10 @@ export async function getBookByTitle(title) {
         cache.set(key, book);
     }
 
-    return book;
+    return {
+        book,
+        cacheStatus: "MISS"
+    };
 }
 export async function getAllBooks() {
 
@@ -43,17 +46,59 @@ export async function updateBookByTitle(title, year) {
 
 
 
+const yearsCache = new Map();
+
 export async function getBooksBetweenYears(from, to) {
-  return await bookRepository.getBooksBetweenYears(from, to);
+    const key = `${from}-${to}`;
+
+    if (yearsCache.has(key)) {
+        console.log("YEARS CACHE HIT");
+        return yearsCache.get(key);
+    }
+
+    console.log("YEARS CACHE MISS");
+
+    const books =
+        await bookRepository.getBooksBetweenYears(from, to);
+
+    yearsCache.set(key, books);
+
+    return books;
 }
 
+
+const genreCache = new Map();
 
 export async function getBooksByGenre(genre) {
-  return await bookRepository.getBooksByGenre(genre);
+    const key = genre.trim().toLowerCase();
+
+    if (genreCache.has(key)) {
+        console.log("GENRE CACHE HIT");
+        return genreCache.get(key);
+    }
+
+    console.log("GENRE CACHE MISS");
+
+    const books = await bookRepository.getBooksByGenre(genre);
+
+    genreCache.set(key, books);
+
+    return books;
 }
 
+let skipLimitCache = null;
+
 export async function getBooksSkipLimit() {
-  return await bookRepository.getBooksSkipLimit();
+    if (skipLimitCache !== null) {
+        console.log("SKIP LIMIT CACHE HIT");
+        return skipLimitCache;
+    }
+
+    console.log("SKIP LIMIT CACHE MISS");
+
+    skipLimitCache = await bookRepository.getBooksSkipLimit();
+
+    return skipLimitCache;
 }
 
 export async function getBooksWithIntegerYear() {

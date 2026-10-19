@@ -2,6 +2,7 @@
 // 1-errors 
 import {z} from 'zod';
 import { config } from "dotenv";
+import 'dotenv/config';
 // import { JWT } from "google-auth-library";
 // import Redis from "ioredis";
 // import nodemailer from "nodemailer";
@@ -19,7 +20,7 @@ const schema = z.object({
 
     MAIL_PASSWORD:z.string(),
 
-    GOOGLE_WEB_OAUTH_CLINT_ID:z.string(),
+    GOOGLE_WEB_OAUTH_CLIENT_ID:z.string(),
 
     REDIS_PORT:z.string().default('6379'),
 
@@ -31,7 +32,7 @@ const schema = z.object({
 
     MAILJET_API_SECRET:z.string(),
 
-    MAILJET_API_FROMEAIL:z.string(),
+    MAILJET_API_FROMEMAIL:z.string(),
 
     MAILJET_API_FROMNAME:z.string(),
     
@@ -40,14 +41,14 @@ const schema = z.object({
  export const env = {
     port:Number(parse.PORT),
     db:{
-        url:parsed.MONGODB_URL
+        url:parse.MONGODB_URL
     },
     redis:{
-        host:parsed.REDIS_HOST,
+        host:parse.REDIS_HOST,
 
-        port: Number(parsed.REDIS_PORT),
+        port: Number(parse.REDIS_PORT),
 
-        password:parsed.REDIS_PASSWORD
+        password:parse.REDIS_PASSWORD
     },
     nodemailer:{
         user:parse.MAIL_USER,

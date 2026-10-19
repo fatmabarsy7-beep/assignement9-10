@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import * as authorRepository from "../repository/author.repository.js";
+import { sendEmail } from "../../../lib/db/email/nodemailer.js";
 
 const JWT_SECRET = "mySuperSecretKey123";
 
@@ -27,6 +28,16 @@ export async function register(data) {
         password: hashedPassword,
         country
     });
+
+      await sendEmail(
+
+        email,
+        "Welcome to Library",
+        
+           '<h2>Welcome ${name}!</h2> <p>Your registration was successful.</p>' 
+           
+        
+);
 
     return {
         id: author._id,

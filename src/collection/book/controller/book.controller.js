@@ -37,15 +37,20 @@ export async function updateBook(req, res, next) {
 }
 
 // 9
-export async function getBookByTitle(req, res, next) {
-  try {
-    const book = await bookService.getBookByTitle(req.query.title);
+export const getBookByTitle = async (req, res, next) => {
+    try {
+        const { book, cacheStatus } =
+            await bookService.getBookByTitle(req.query.title);
 
-    res.json(book);
-  } catch (error) {
-    next(error);
-  }
-}
+        res.status(200).json({
+            success: true,
+            cache: cacheStatus,
+            data: book
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 // 10
 export async function getBooksBetweenYears(req, res, next) {
